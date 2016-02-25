@@ -340,7 +340,7 @@ $(function() {
                                             two.remove(trisA[i]);
                                         }
 
-                                        two.bind('update', pause(ANIMATION_TIME/2, deconstructStack(0))).play();
+                                        two.bind('update', pause(ANIMATION_TIME, deconstructStack(0))).play();
                                     })).play();
                                 }
                             })).play();
