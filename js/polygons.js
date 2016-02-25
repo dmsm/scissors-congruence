@@ -12,8 +12,8 @@ var POLY_HALF_OPACITY = 0.6;
 var POLY_GHOST_OPACITY = 0.3;
 var ALPHA = 0.01; // for iteratively calculating target area
 
-var START_A_TEXT = "Click anywhere to start drawing the initial polgyon."
-var START_B_TEXT = "Click anywhere to start drawing the terminal polgyon."
+var START_A_TEXT = "Click anywhere to start drawing the initial polygon."
+var START_B_TEXT = "Click anywhere to start drawing the terminal polygon."
 var END_A_TEXT = "Click back in the orange circle when you are done drawing the initial polygon."
 var END_B_TEXT = "Click back in the orange circle when you are done drawing the terminal polygon."
 var ERR_TEXT = "Your edge cannot intersect any existing edges in the polygon."
@@ -95,7 +95,7 @@ $(function() {
         $canvas.unbind('.userDrawing');
         offset  = $canvas.offset();
 
-        $canvas.addClass('border');
+        $canvas.addClass('canvas');
 
         two.frameCount = 0;
 

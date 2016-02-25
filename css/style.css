@@ -28,8 +28,9 @@ a {
 h1 {
     color: #5E412F;
 }
-.border {
+.canvas {
     border-width: 0 1px;
     border-color: #5E412F;
     border-style: solid;
+    margin-left: 7.5px;
 }
