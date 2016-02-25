@@ -95,6 +95,8 @@ $(function() {
         $canvas.unbind('.userDrawing');
         offset  = $canvas.offset();
 
+        $canvas.addClass('border');
+
         two.frameCount = 0;
 
         trisA = [];
