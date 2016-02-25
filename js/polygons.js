@@ -99,6 +99,7 @@ $(function() {
 
         trisA = [];
         trisB = [];
+        slices = [];
 
         polyA = two.makePath(0,0).noStroke();
         polyA.fill = POLY_A_COLOR;
@@ -315,7 +316,32 @@ $(function() {
                                 }
                                 else
                                 {
-                                    two.bind('update', pause(ANIMATION_TIME/2, deconstructStack(0))).play();
+                                    two.bind('update', pause(ANIMATION_TIME, function () {
+                                        var sliceHeight = area / UNIT_WIDTH;
+                                        var stackY = PolyK.GetAABB(toPolyK(trisA[0])).y
+                                        var stackX = PolyK.GetAABB(toPolyK(trisA[0])).x
+                                        var currWidth = 0;
+                                        for (var i = 0; i < trisB.length; i++)
+                                        {
+                                            var currTri = trisB[i];
+                                            var sliceArea = PolyK.GetArea(toPolyK(currTri));
+                                            var sliceWidth = sliceArea * UNIT_WIDTH / area;
+                                            var slice = makePoly([stackX+UNIT_WIDTH-currWidth-sliceWidth, stackY,
+                                                stackX+UNIT_WIDTH-currWidth, stackY,
+                                                stackX+UNIT_WIDTH-currWidth, stackY+sliceHeight,
+                                                stackX+UNIT_WIDTH-currWidth-sliceWidth, stackY+sliceHeight]);
+                                            slice.fill = POLY_A_COLOR;
+                                            slices.push(slice);
+                                            two.add(slice);
+                                            currWidth += sliceWidth;
+                                        }
+                                        for (var i = 0; i < trisA.length; i++)
+                                        {
+                                            two.remove(trisA[i]);
+                                        }
+
+                                        two.bind('update', pause(ANIMATION_TIME/2, deconstructStack(0))).play();
+                                    })).play();
                                 }
                             })).play();
                         })).play();
@@ -328,28 +354,16 @@ $(function() {
     function deconstructStack(index) {
         return function() {
             var currTri = trisB[index];
-            var sliceWidth = PolyK.GetArea(toPolyK(currTri)) * UNIT_WIDTH / area;
-
-            var stackHeight = 0;
-            var stackY = PolyK.GetAABB(toPolyK(trisA[0])).y
-            for (var i = 0; i < trisA.length; i++)
-            {
-                var box = PolyK.GetAABB(toPolyK(trisA[i]));
-                stackHeight += box.height;
-                trisA[i].vertices = makeVertices([box.x, box.y, box.x+box.width-sliceWidth, box.y, box.x+box.width-sliceWidth, box.y+box.height, box.x, box.y+box.height]);
-            }
-
-            var slice = makePoly([box.x+box.width-sliceWidth, stackY, box.x+box.width, stackY, box.x+box.width, stackY+stackHeight, box.x+box.width-sliceWidth, stackY+stackHeight]);
-            slice.fill = POLY_A_COLOR;
-            two.add(slice);
-
-            two.update();
+            var slice = slices[index];
 
             var longestSide = currTri.vertices[0].distanceTo(currTri.vertices[1]);
 
             var sliceBox = PolyK.GetAABB(toPolyK(slice));
 
-            two.bind('update', translate(slice, ANIMATION_TIME, (two.width-sliceBox.width)/2-sliceBox.x, two.height-box.height-PADDING-box.y, function() {
+            two.bind('update', translate(slice, ANIMATION_TIME,
+                (two.width-sliceBox.width)/2-sliceBox.x,
+                two.height-sliceBox.height-PADDING-sliceBox.y,
+                function() {
                 two.bind('update', normalizeRect(slice, longestSide, function() {
                     two.bind('update', rectToTri(slice, currTri, function() {
                         two.bind('update', rotate(currTri, ANIMATION_TIME, terminalTheta, false, 0, 0, function() {
