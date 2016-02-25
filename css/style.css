@@ -5,8 +5,15 @@ body {
     overflow: auto;
     height: 100vh;
 }
-.spaced {
-    margin-top: 20px;
+.social {
+	margin-top: 10px;
+}
+.social .fb-like {
+	vertical-align: middle;
+	margin-left: 10px;
+}
+.social iframe {
+	vertical-align:middle !important;
 }
 .highlight {
     background-color: #FCEBB6;
@@ -18,5 +25,6 @@ h1 {
     color: #5E412F;
 }
 #github {
+	margin-top: 10px;
     color: black;
 }
