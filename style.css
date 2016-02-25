@@ -5,6 +5,12 @@ body {
     overflow: auto;
     height: 100vh;
 }
+.social iframe {
+	vertical-align: middle;
+}
+.social div span {
+	vertical-align:middle !important;
+}
 .spaced {
     margin-top: 10px;
 }
