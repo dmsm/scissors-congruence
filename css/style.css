@@ -7,14 +7,17 @@ body {
 }
 .social {
     margin-top: 20px;
-    margin-bottom: 15px;
 }
 .social .fb-like {
-    vertical-align: middle;
+    vertical-align: top;
     margin-right: 10px;
-}
+}0
 .social iframe {
-    vertical-align:middle !important;
+    vertical-align: top !important;
+}
+.social .git {
+    margin-left: 10px;
+    vertical-align: top;
 }
 .highlight {
     background-color: #FCEBB6;
@@ -24,7 +27,4 @@ a {
 }
 h1 {
     color: #5E412F;
-}
-#github {
-    color: black;
 }
