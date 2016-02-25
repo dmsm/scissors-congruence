@@ -76,6 +76,8 @@ $(function() {
 
     reset();
 
+    Socialite.load();
+
     function reset(e)
     {
         two.width = $(canvas).width(),
