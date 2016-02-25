@@ -6,14 +6,15 @@ body {
     height: 100vh;
 }
 .social {
-	margin-top: 10px;
+    margin-top: 15px;
+    margin-bottom: 10px;
 }
 .social .fb-like {
-	vertical-align: middle;
-	margin-left: 10px;
+    vertical-align: middle;
+    margin-right: 10px;
 }
 .social iframe {
-	vertical-align:middle !important;
+    vertical-align:middle !important;
 }
 .highlight {
     background-color: #FCEBB6;
@@ -25,6 +26,5 @@ h1 {
     color: #5E412F;
 }
 #github {
-	margin-top: 10px;
     color: black;
 }
