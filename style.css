@@ -5,6 +5,15 @@ body {
     overflow: auto;
     height: 100vh;
 }
+.social-share {
+	margin-top: 10px;
+}
+.social-share iframe {
+	vertical-align: middle;
+}
+.fb-share-button {
+	margin-right: 20px;
+}
 .spaced {
     margin-top: 10px;
 }
