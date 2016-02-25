@@ -5,9 +5,9 @@ body {
     overflow: auto;
     height: 100vh;
 }
-.social {
-    margin-top: 15px;
-    margin-bottom: 10px;
+.spaced {
+    margin-top: 20px;
+    margin-bottom: 15px;
 }
 .social .fb-like {
     vertical-align: middle;
