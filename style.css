@@ -1,0 +1,22 @@
+body {
+    overflow: hidden;
+}
+.scroll {
+    overflow: auto;
+    height: 100vh;
+}
+.spaced {
+    margin-top: 20px;
+}
+.highlight {
+    background-color: #FCEBB6;
+} 
+a {
+    color: #78C0A8;
+}
+h1 {
+    color: #5E412F;
+}
+#github {
+    color: black;
+}
