@@ -5,14 +5,15 @@ body {
     overflow: auto;
     height: 100vh;
 }
-.social iframe {
+.social {
+	margin-top: 10px;
+}
+.social .fb-like {
 	vertical-align: middle;
+	margin-left: 10px;
 }
-.social div span {
+.social iframe {
 	vertical-align:middle !important;
-}
-.spaced {
-    margin-top: 10px;
 }
 .highlight {
     background-color: #FCEBB6;
@@ -24,5 +25,6 @@ h1 {
     color: #5E412F;
 }
 #github {
+	margin-top: 5px;
     color: black;
 }
