@@ -24,8 +24,10 @@ var ANIMATION_TIME = 20;
 var PADDING = 50;
 var PRECISION = 30; // max distance from start vertex at which we close poly
 
-
 $(function() {
+    var demoAVertices = [215,242,335,72,409,203,353,196,218,304,393,314,442,203,571,213,494,317,381,422,225,391,102,313,128,159,234,88];
+    var demoBVertices = [721,68,863,130,816,304,693,380,523,301,514,187,616,110];
+
     // set up two.js
     var canvas = document.getElementById('canvas');
     var two = new Two({
@@ -73,6 +75,8 @@ $(function() {
     var label;
 
     $(window).resize(reset);
+
+    $("#demo").click(demo);
 
     reset();
 
@@ -134,6 +138,45 @@ $(function() {
         if (e) redraw(e);
 
         two.update();
+    }
+
+    function demo()
+    {
+        reset();
+
+        $canvas.unbind('.userDrawing')
+
+        two.remove(dot);
+        label.value = "";
+
+        polyA.vertices = makeVertices(demoAVertices);
+
+        polyB.vertices = makeVertices(demoBVertices);
+
+        two.update();
+
+        var areaA = PolyK.GetArea(toPolyK(polyA));
+        var areaB = PolyK.GetArea(toPolyK(polyB));
+        area = calculateArea(polyA, polyB);
+        
+        two.frameCount = 0;
+
+        two.bind('update', pause(ANIMATION_TIME, function () {
+            two.bind('update', scale(polyA, ANIMATION_TIME, area/areaA)).play();
+            two.bind('update', scale(polyB, ANIMATION_TIME, area/areaB, function() {
+
+                var boxA = PolyK.GetAABB(toPolyK(polyA));
+                var boxB = PolyK.GetAABB(toPolyK(polyB));
+
+                two.bind('update', translate(polyA, ANIMATION_TIME, -boxA.x+PADDING, -boxA.y+PADDING)).play();
+                two.bind('update', translate(polyB, ANIMATION_TIME, two.width-boxB.x-boxB.width-PADDING, -boxB.y+PADDING, function() {
+                    triangulate();
+                    two.bind('update', pause(ANIMATION_TIME, function() {
+                        two.bind('update', pause(ANIMATION_TIME, constructStack(0))).play();
+                    })).play();
+                })).play();
+            })).play();
+        })).play();
     }
 
     function redraw(e)
