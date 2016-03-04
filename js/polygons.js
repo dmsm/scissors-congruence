@@ -25,8 +25,8 @@ var PADDING = 50;
 var PRECISION = 30; // max distance from start vertex at which we close poly
 
 $(function() {
-    var demoAVertices = [215,242,335,72,409,203,353,196,218,304,393,314,442,203,571,213,494,317,381,422,225,391,102,313,128,159,234,88];
-    var demoBVertices = [721,68,863,130,816,304,693,380,523,301,514,187,616,110];
+    var demoAVertices = [247,263,286,38,399,204,371,396,119,312,257,480,375,441,242,516,53,242,117,93];
+    var demoBVertices = [697,280,728,337,710,401,614,404,586,314,635,265];
 
     // set up two.js
     var canvas = document.getElementById('canvas');
@@ -290,6 +290,9 @@ $(function() {
                     else
                     {   
                         label.value = "";
+
+                        console.log(JSON.stringify(toPolyK(polyA)));
+                        console.log(JSON.stringify(toPolyK(polyB)));
 
                         $canvas.unbind('.userDrawing'); // input completed
 
