@@ -97,9 +97,8 @@ $(function() {
         $canvas = $("svg");
         $canvas.unbind('.reset');
         $canvas.unbind('.userDrawing');
-        offset  = $canvas.offset();
-
         $canvas.addClass('canvas');
+		offset  = $canvas.offset();
 
         two.frameCount = 0;
 
