@@ -1,4 +1,4 @@
-// starting vertex marker
+    // starting vertex marker
 var DOT_COLOR = '#FCEBB6';
 var DOT_OPACITY = 0.6;
 var dot;
@@ -27,6 +27,8 @@ var PRECISION = 30; // max distance from start vertex at which we close poly
 $(function() {
     var demoAVertices = [247,263,286,38,399,204,371,396,119,312,257,480,375,441,242,516,53,242,117,93];
     var demoBVertices = [697,280,728,337,710,401,614,404,586,314,635,265];
+    var aVertices;
+    var bVertices;
 
     // set up two.js
     var canvas = document.getElementById('canvas');
@@ -76,12 +78,28 @@ $(function() {
 
     $(window).resize(reset);
 
-    $("#demo").click(demo);
+    $("#demo").click(replay(true));
+    $("#replay").click(replay(false));
+
+    $("#play-pause").click(function() {
+        if (two.playing)
+        {
+            $(this).html('<span class="glyphicon glyphicon-play" aria-hidden="true"></span> Play');
+            two.pause();
+        }
+        else
+        {
+            $(this).html('<span class="glyphicon glyphicon-pause" aria-hidden="true"></span> Pause');
+            two.play();
+        }
+    })
 
     reset();
 
     function reset(e)
     {
+        $("#replay").prop('disabled', true);
+
         two.width = $(canvas).width(),
         two.height = $(window).height()
 
@@ -98,7 +116,7 @@ $(function() {
         $canvas.unbind('.reset');
         $canvas.unbind('.userDrawing');
         $canvas.addClass('canvas');
-		offset  = $canvas.offset();
+        offset  = $canvas.offset();
 
         two.frameCount = 0;
 
@@ -139,43 +157,53 @@ $(function() {
         two.update();
     }
 
-    function demo()
+    function replay(demo)
     {
-        reset();
+        return function () {
+            reset();
 
-        $canvas.unbind('.userDrawing')
+            $canvas.unbind('.userDrawing')
 
-        two.remove(dot);
-        label.value = "";
+            two.remove(dot);
+            label.value = "";
 
-        polyA.vertices = makeVertices(demoAVertices);
+            if(demo)
+            {
+                aVertices = demoAVertices;
+                bVertices = demoBVertices
+            }
+            polyA.vertices = makeVertices(aVertices);
+            polyB.vertices = makeVertices(bVertices);
+            
+            two.update();
 
-        polyB.vertices = makeVertices(demoBVertices);
+            var areaA = PolyK.GetArea(toPolyK(polyA));
+            var areaB = PolyK.GetArea(toPolyK(polyB));
+            area = calculateArea(polyA, polyB);
+            
+            $("#play-pause").html(
+                '<span class="glyphicon glyphicon-pause" aria-hidden="true"></span> Pause'
+                ).prop('disabled', false);
 
-        two.update();
+            two.frameCount = 0;
 
-        var areaA = PolyK.GetArea(toPolyK(polyA));
-        var areaB = PolyK.GetArea(toPolyK(polyB));
-        area = calculateArea(polyA, polyB);
-        
-        two.frameCount = 0;
+            two.bind('update', pause(ANIMATION_TIME, function () {
+                two.bind('update', scale(polyA, ANIMATION_TIME, area/areaA)).play();
+                two.bind('update', scale(polyB, ANIMATION_TIME, area/areaB, function() {
 
-        two.bind('update', pause(ANIMATION_TIME, function () {
-            two.bind('update', scale(polyA, ANIMATION_TIME, area/areaA)).play();
-            two.bind('update', scale(polyB, ANIMATION_TIME, area/areaB, function() {
+                    var boxA = PolyK.GetAABB(toPolyK(polyA));
+                    var boxB = PolyK.GetAABB(toPolyK(polyB));
 
-                var boxA = PolyK.GetAABB(toPolyK(polyA));
-                var boxB = PolyK.GetAABB(toPolyK(polyB));
-
-                two.bind('update', translate(polyA, ANIMATION_TIME, -boxA.x+PADDING, -boxA.y+PADDING)).play();
-                two.bind('update', translate(polyB, ANIMATION_TIME, two.width-boxB.x-boxB.width-PADDING, -boxB.y+PADDING, function() {
-                    triangulate();
-                    two.bind('update', pause(ANIMATION_TIME, function() {
-                        two.bind('update', pause(ANIMATION_TIME, constructStack(0))).play();
+                    two.bind('update', translate(polyA, ANIMATION_TIME, -boxA.x+PADDING, -boxA.y+PADDING)).play();
+                    two.bind('update', translate(polyB, ANIMATION_TIME, two.width-boxB.x-boxB.width-PADDING, -boxB.y+PADDING, function() {
+                        triangulate();
+                        two.bind('update', pause(ANIMATION_TIME, function() {
+                            two.bind('update', pause(ANIMATION_TIME, constructStack(0))).play();
+                        })).play();
                     })).play();
                 })).play();
             })).play();
-        })).play();
+        }
     }
 
     function redraw(e)
@@ -290,15 +318,19 @@ $(function() {
                     {   
                         label.value = "";
 
-                        console.log(JSON.stringify(toPolyK(polyA)));
-                        console.log(JSON.stringify(toPolyK(polyB)));
-
                         $canvas.unbind('.userDrawing'); // input completed
+
+                        aVertices = toPolyK(polyA);
+                        bVertices = toPolyK(polyB);
 
                         var areaA = PolyK.GetArea(toPolyK(polyA));
                         var areaB = PolyK.GetArea(toPolyK(polyB));
                         area = calculateArea(polyA, polyB);
                         
+                        $("#play-pause").html(
+                            '<span class="glyphicon glyphicon-pause" aria-hidden="true"></span> Pause'
+                            ).prop('disabled', false);
+
                         two.frameCount = 0;
 
                         two.bind('update', scale(polyA, ANIMATION_TIME, area/areaA)).play();
@@ -422,6 +454,9 @@ $(function() {
                                 }
                                 else
                                 {
+                                    $("#play-pause").prop('disabled', true);
+                                    $("#replay").prop('disabled', false);
+
                                     $canvas.bind('click.reset', reset);
                                     label.value = RESET_TEXT;
                                     label.fill = RESET_COLOR;
