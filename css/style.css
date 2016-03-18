@@ -6,7 +6,7 @@ body {
     height: 100vh;
 }
 .social {
-    margin-top: 20px;
+    margin-top: 10px;
 }
 .social .fb-like {
     vertical-align: top;
@@ -33,4 +33,7 @@ h1 {
     border-color: #5E412F;
     border-style: solid;
     margin-left: 7.5px;
+}
+.controls button {
+    width: 32%;
 }
