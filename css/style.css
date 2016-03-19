@@ -7,6 +7,7 @@ body {
 }
 .social {
     margin-top: 10px;
+    margin-bottom: 20px;
 }
 .social .fb-like {
     vertical-align: top;
@@ -18,12 +19,6 @@ body {
 .social .git {
     margin-left: 10px;
     vertical-align: top;
-}
-.highlight {
-    background-color: #FCEBB6;
-} 
-a {
-    color: #78C0A8;
 }
 h1 {
     color: #5E412F;
