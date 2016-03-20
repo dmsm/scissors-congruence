@@ -22,6 +22,8 @@ body {
 }
 h1 {
     color: #5E412F;
+    margin-top: 0;
+    padding-top: 10px;
 }
 .canvas {
     border-width: 0 1px;
@@ -29,6 +31,18 @@ h1 {
     border-style: solid;
     margin-left: 7.5px;
 }
-.controls button {
+#sidebar {
+    min-height: 100%;
+    position: relative;
+}
+#sidebar-content {
+    padding-bottom: 70px
+}
+#controls {
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+}
+#controls button {
     width: 32%;
 }

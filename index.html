@@ -39,37 +39,42 @@
     <div class="container-fluid">
         <div class="row">
             <div id="canvas" class="col-sm-8"></div>
-            <div id="sidebar" class="col-sm-4 scroll">
-                <h1>Scissors Congruence<br><small>An interactive demonstration of the <a href="https://en.wikipedia.org/wiki/Wallace%E2%80%93Bolyai%E2%80%93Gerwien_theorem">Wallace–Bolyai–Gerwien theorem.</a></small></h1>
-                <p>by <a href="mailto:dimkasmir@gmail.com">Dima Smirnov</a> and <a href="http://zepstein.com">Zivvy Epstein</a></p>
-                <div class="panel panel-default">
-                    <div class="panel-heading"><h4>Theorem</h4></div>
-                    <div class="panel-body">
-                        <img class="img-responsive" src="img/wbg.jpg">
-                        <p>
-                            Any simple polygon can be cut into finite pieces and rearranged to form any other simple polygon of equal area.
-                        </p>
+            <div class="col-sm-4 scroll">
+                <div id="sidebar">
+                    <div id="sidebar-content">
+                        <h1>Scissors Congruence<br><small>An interactive demonstration of the <a href="https://en.wikipedia.org/wiki/Wallace%E2%80%93Bolyai%E2%80%93Gerwien_theorem">Wallace–Bolyai–Gerwien theorem.</a></small></h1>
+                        <p>by <a href="mailto:dimkasmir@gmail.com">Dima Smirnov</a> and <a href="http://zepstein.com">Zivvy Epstein</a></p>
+                        <div class="panel panel-default">
+                            <div class="panel-heading"><h4>Theorem</h4></div>
+                            <div class="panel-body">
+                                <img class="img-responsive" src="img/wbg.jpg">
+                                <p>
+                                    Any simple polygon can be cut into finite pieces and rearranged to form any other simple polygon of equal area.
+                                </p>
+                            </div>
+                        </div>
+
+                        <p>This project was inspired by the Discrete and Computational Geometry course taught at Harvey Mudd College by <a href="http://satyandevadoss.org">Professor Satyan Devadoss</a>.</p>
+
+
+                        <div class="social">
+                            <div class="fb-like" data-href="http://dmsm.github.io/scissors-congruence" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
+                            <a href="https://twitter.com/share" class="twitter-share-button">Tweet</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+                            <iframe class="git" src="https://ghbtns.com/github-btn.html?user=dmsm&repo=scissors-congruence&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="25px"></iframe>
+                        </div>
                     </div>
-                </div>
 
-                <p>This project was inspired by the Discrete and Computational Geometry course taught at Harvey Mudd College by <a href="http://satyandevadoss.org">Professor Satyan Devadoss</a>.</p>
-
-                <div class="social">
-                    <div class="fb-like" data-href="http://dmsm.github.io/scissors-congruence" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
-                    <a href="https://twitter.com/share" class="twitter-share-button">Tweet</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-                    <iframe class="git" src="https://ghbtns.com/github-btn.html?user=dmsm&repo=scissors-congruence&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="25px"></iframe>
-                </div>
-
-                <div class="controls">
-                    <button id="play-pause" type="button" class="btn btn-default" disabled>
-                        <span class="glyphicon glyphicon-pause" aria-hidden="true"></span> Pause
-                    </button>
-                    <button id="replay" type="button" class="btn btn-default" disabled>
-                    <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Replay
-                    </button>
-                    <button id="demo" type="button" class="btn btn-default">
-                        <span class="glyphicon glyphicon-film" aria-hidden="true"></span> Demo
-                    </button>
+                    <div id="controls">
+                        <button id="play-pause" type="button" class="btn btn-default" disabled>
+                            <span class="glyphicon glyphicon-pause" aria-hidden="true"></span> Pause
+                        </button>
+                        <button id="replay" type="button" class="btn btn-default" disabled>
+                        <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Replay
+                        </button>
+                        <button id="demo" type="button" class="btn btn-default">
+                            <span class="glyphicon glyphicon-film" aria-hidden="true"></span> Demo
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
