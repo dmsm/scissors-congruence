@@ -12,12 +12,12 @@ var POLY_HALF_OPACITY = 0.6;
 var POLY_GHOST_OPACITY = 0.3;
 var ALPHA = 0.01; // for iteratively calculating target area
 
-var START_A_TEXT = "Click anywhere to start drawing the initial polygon."
-var START_B_TEXT = "Click anywhere to start drawing the terminal polygon."
-var END_A_TEXT = "Click back in the orange circle when you are done drawing the initial polygon."
-var END_B_TEXT = "Click back in the orange circle when you are done drawing the terminal polygon."
-var ERR_TEXT = "Your edge cannot intersect any existing edges in the polygon."
-var RESET_TEXT = "Click anywhere to try again."
+var START_A_TEXT = "Click or tap to begin drawing the first polygon.";
+var START_B_TEXT = "First polygon complete. Click or tap to begin the second polygon.";
+var END_A_TEXT = "Add vertices, then select the starting circle to close the first polygon.";
+var END_B_TEXT = "Add vertices, then select the starting circle to close the second polygon.";
+var ERR_TEXT = "Edges cannot cross. Place this vertex somewhere else.";
+var RESET_TEXT = "Transformation complete. Replay or start over.";
 
 var ANIMATION_TIME = 20;
 
@@ -33,8 +33,9 @@ $(function() {
     // set up two.js
     var canvas = document.getElementById('canvas');
     var two = new Two({
-        width: $(canvas).width(),
-        height: $(window).height()
+        // Keep geometry stable while CSS scales the drawing to the available space.
+        width: 1000,
+        height: 720
     }).appendTo(canvas);
 
 
@@ -72,11 +73,27 @@ $(function() {
     var isValidPoly;
     var origin;
     var $canvas;
-    var offset;
+    var instruction = document.getElementById('instruction');
+    var svg = two.renderer.domElement;
+    svg.setAttribute('viewBox', '0 0 1000 720');
+    svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+    svg.setAttribute('role', 'img');
+    svg.setAttribute('aria-label', 'Interactive polygon drawing and transformation');
+    svg.setAttribute('tabindex', '0');
 
-    var label;
+    function setInstruction(text) {
+        if (instruction.textContent !== text) instruction.textContent = text;
+        $(instruction).toggleClass('is-error', text === ERR_TEXT);
+    }
 
-    $(window).resize(reset);
+    function closeRadius() {
+        var scale = Math.min(svg.clientWidth / two.width, svg.clientHeight / two.height);
+        return Math.max(PRECISION, 16 / scale);
+    }
+
+    $('#start-over').click(function () {
+        reset();
+    });
 
     $("#demo").click(replay(true));
     $("#replay").click(replay(false));
@@ -84,24 +101,23 @@ $(function() {
     $("#play-pause").click(function() {
         if (two.playing)
         {
-            $(this).html('<span class="glyphicon glyphicon-play" aria-hidden="true"></span> Play');
+            $(this).html('Resume');
             two.pause();
         }
         else
         {
-            $(this).html('<span class="glyphicon glyphicon-pause" aria-hidden="true"></span> Pause');
+            $(this).html('Pause');
             two.play();
         }
     })
 
     reset();
 
-    function reset(e)
+    function reset()
     {
         $("#replay").prop('disabled', true);
-
-        two.width = $(canvas).width(),
-        two.height = $(window).height()
+        $("#play-pause").text('Pause').prop('disabled', true);
+        $(canvas).addClass('is-drawing');
 
         MAX_H = two.height/2;
         MAX_W = two.width/3;
@@ -112,11 +128,10 @@ $(function() {
         two.unbind('update').pause();
         two.clear();
 
-        $canvas = $("svg");
+        $canvas = $(svg);
         $canvas.unbind('.reset');
         $canvas.unbind('.userDrawing');
         $canvas.addClass('canvas');
-        offset  = $canvas.offset();
 
         two.frameCount = 0;
 
@@ -138,21 +153,15 @@ $(function() {
         line.stroke = POLY_A_COLOR;
 
         // highlights the start vertex
-        dot = two.makeCircle(two.width/2, two.height/2, PRECISION).noStroke();
+        dot = two.makeCircle(two.width/2, two.height/2, closeRadius()).noStroke();
         dot.fill = DOT_COLOR;
-        dot.opacity = DOT_OPACITY;
-       
-        label = new Two.Text(START_A_TEXT, two.width/2, two.height - PADDING, {family: "'Helvetica Neue', Helvetica, Arial, sans-serif"});
-        label.fill = POLY_A_COLOR;
-        label.size = 20;
-        two.add(label);
+        dot.opacity = 0;
+        setInstruction(START_A_TEXT);
 
         isValidPoly = true; // none of the edges cross each other
         origin = new Two.Anchor(two.width/2, two.height/2);
 
-        $canvas.bind('mousemove.userDrawing', redraw).bind('click.userDrawing', addPoint);
-
-        if (e) redraw(e);
+        $canvas.bind('pointermove.userDrawing', redraw).bind('pointerup.userDrawing', addPoint);
 
         two.update();
     }
@@ -165,7 +174,8 @@ $(function() {
             $canvas.unbind('.userDrawing')
 
             two.remove(dot);
-            label.value = "";
+            $(canvas).removeClass('is-drawing');
+            setInstruction('Scaling the polygons to equal area, then dissecting and rearranging the pieces…');
 
             if(demo)
             {
@@ -182,7 +192,7 @@ $(function() {
             area = calculateArea(polyA, polyB);
             
             $("#play-pause").html(
-                '<span class="glyphicon glyphicon-pause" aria-hidden="true"></span> Pause'
+                'Pause'
                 ).prop('disabled', false);
 
             two.frameCount = 0;
@@ -208,8 +218,20 @@ $(function() {
 
     function redraw(e)
     {
-        mouse.x = e.pageX - offset.left;
-        mouse.y = e.pageY - offset.top;
+        var event = e.originalEvent || e;
+        if (event.isPrimary === false) return false;
+        var point = svg.createSVGPoint();
+        point.x = event.clientX;
+        point.y = event.clientY;
+        point = point.matrixTransform(svg.getScreenCTM().inverse());
+        // Ignore the empty margins when the drawing is letterboxed on narrow screens.
+        if (point.x < 0 || point.x > two.width || point.y < 0 || point.y > two.height) return false;
+        mouse.x = point.x;
+        mouse.y = point.y;
+        if (dot) {
+            dot.opacity = DOT_OPACITY;
+            dot.radius = closeRadius();
+        }
 
         if (line.vertices.length > 0)
         {
@@ -228,50 +250,36 @@ $(function() {
             }
             else
             {
-                dot = two.makeCircle(mouse.x, mouse.y, PRECISION).noStroke();
+                dot = two.makeCircle(mouse.x, mouse.y, closeRadius()).noStroke();
                 dot.fill = DOT_COLOR;
                 dot.opacity = DOT_OPACITY;
             }
         }
         else
         {
-            if(isValidPoly = PolyK.IsSimple(toPolyK(polyCurr)) || origin.distanceTo(mouse) <= PRECISION )
-            {
-                if (polyCurr == polyA)
-                {
-                    label.value = END_A_TEXT; 
-                    label.fill = POLY_A_COLOR;   
+            var closing = origin.distanceTo(mouse) <= closeRadius();
+            var previous = polyCurr.vertices[polyCurr.vertices.length - 2];
+            polyCurr.vertices.pop();
+            polyCurr.vertices.push(closing ? previous.clone() : mouse.clone());
+            polyCurr.opacity = closing ? 1 : POLY_HALF_OPACITY;
+
+            // Check this pointer position, including taps without a preceding hover.
+            // The preview duplicates the last corner immediately after adding a point.
+            var candidate = [];
+            polyCurr.vertices.forEach(function (vertex) {
+                if (!candidate.length || vertex.x !== candidate[candidate.length - 2] ||
+                    vertex.y !== candidate[candidate.length - 1]) {
+                    candidate.push(vertex.x, vertex.y);
                 }
-                else
-                {
-                    label.value = END_B_TEXT; 
-                    label.fill = POLY_B_COLOR;  
-                }
-                
-                
+            });
+            isValidPoly = PolyK.IsSimple(candidate);
+            if (isValidPoly) {
+                setInstruction(polyCurr === polyA ? END_A_TEXT : END_B_TEXT);
                 polyA.fill = POLY_A_COLOR;
                 polyB.fill = POLY_B_COLOR;
-            }
-            else
-            {
+            } else {
                 polyCurr.fill = ERR_COLOR;
-
-                label.value = ERR_TEXT;
-                label.fill = ERR_COLOR;
-            }
-
-            if (origin.distanceTo(mouse) > PRECISION)
-            {
-                polyCurr.opacity = POLY_HALF_OPACITY;
-
-                polyCurr.vertices.pop();
-                polyCurr.vertices.push(mouse.clone());
-            }
-            else
-            {
-                polyCurr.opacity = 1;
-                polyCurr.vertices[polyCurr.vertices.length-1].x = polyCurr.vertices[polyCurr.vertices.length-2].x;
-                polyCurr.vertices[polyCurr.vertices.length-1].y = polyCurr.vertices[polyCurr.vertices.length-2].y;
+                setInstruction(ERR_TEXT);
             }
         }
 
@@ -280,6 +288,10 @@ $(function() {
 
     function addPoint(e)
     {
+        var event = e.originalEvent || e;
+        if (event.button !== undefined && event.button !== 0) return;
+        // Touch has no hover: always update the preview at the actual tap location.
+        if (redraw(e) === false) return;
         if(isValidPoly)
         {
             line.vertices = [];
@@ -287,13 +299,17 @@ $(function() {
 
             if(polyCurr.vertices.length > 1)
             {
-                if (origin.distanceTo(mouse) > PRECISION)
+                if (origin.distanceTo(mouse) > closeRadius())
                 {
                     polyCurr.vertices.push(mouse.clone()); // add a vertex
                     redraw(e);
                 }
                 else if(polyCurr.vertices.length > 3)
                 {
+                    if (Math.abs(PolyK.GetArea(toPolyK(polyCurr))) < 1) {
+                        setInstruction('Add a vertex away from the line. The polygon must have nonzero area.');
+                        return;
+                    }
                     polyCurr.vertices.pop(); // remove helper mouse pointer vertex
                     two.remove(dot);
                     dot = false;
@@ -306,8 +322,7 @@ $(function() {
                     if(polyCurr == polyA)
                     {
                         // start drawing second poly
-                        label.value = START_B_TEXT;
-                        label.fill = POLY_B_COLOR;
+                        setInstruction(START_B_TEXT);
 
                         line.stroke = POLY_B_COLOR;
                         polyCurr = polyB;
@@ -316,7 +331,8 @@ $(function() {
                     }
                     else
                     {   
-                        label.value = "";
+                        $(canvas).removeClass('is-drawing');
+                        setInstruction('Scaling the polygons to equal area, then dissecting and rearranging the pieces…');
 
                         $canvas.unbind('.userDrawing'); // input completed
 
@@ -328,7 +344,7 @@ $(function() {
                         area = calculateArea(polyA, polyB);
                         
                         $("#play-pause").html(
-                            '<span class="glyphicon glyphicon-pause" aria-hidden="true"></span> Pause'
+                            'Pause'
                             ).prop('disabled', false);
 
                         two.frameCount = 0;
@@ -355,13 +371,11 @@ $(function() {
             {
                 if (polyCurr == polyA)
                 {
-                    label.value = END_A_TEXT;
-                    label.color = POLY_A_COLOR;
+                    setInstruction(END_A_TEXT);
                 }
                 else
                 {
-                    label.value = END_B_TEXT;
-                    label.color = POLY_B_COLOR;
+                    setInstruction(END_B_TEXT);
                 }
 
                 origin = polyCurr.vertices[polyCurr.vertices.length-1];
@@ -457,9 +471,7 @@ $(function() {
                                     $("#play-pause").prop('disabled', true);
                                     $("#replay").prop('disabled', false);
 
-                                    $canvas.bind('click.reset', reset);
-                                    label.value = RESET_TEXT;
-                                    label.fill = RESET_COLOR;
+                                    setInstruction(RESET_TEXT);
                                 }
                             })).play();
                         })).play();

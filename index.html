@@ -2,89 +2,67 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta property="og:url"                content="http://dmsm.github.io/scissors-congruence" />
-    <meta property="og:title"              content="Scissors Congruence" />
-    <meta property="og:description"        content="An interactive demonstration of the Wallace–Bolyai–Gerwien theorem." />
-    <meta property="og:image"              content="http://dmsm.github.io/scissors-congruence/img/wbg.jpg" />
-    <meta property="og:type" content="article" />
-    <meta property="fb:admins" content="1310192800" />
+    <meta name="description" content="An interactive demonstration of the Wallace–Bolyai–Gerwien theorem.">
+    <meta property="og:url" content="https://dmsm.github.io/scissors-congruence/">
+    <meta property="og:title" content="Scissors Congruence">
+    <meta property="og:description" content="An interactive demonstration of the Wallace–Bolyai–Gerwien theorem.">
+    <meta property="og:image" content="https://dmsm.github.io/scissors-congruence/img/wbg.jpg">
+    <meta property="og:type" content="website">
     <title>Scissors Congruence</title>
-
-    <script type="text/javascript" src="js/jquery.min.js"></script>
-    <script type="text/javascript" src="js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="js/two.min.js"></script>
-    <script type="text/javascript" src="js/math.min.js"></script>
-
-    <script type="text/javascript" src="js/polyk.js"></script>
-    <script type="text/javascript" src="js/transformations.js"></script>
-    <script type="text/javascript" src="js/polygons.js"></script>
-    
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'UA-53112709-7');
-    </script>
-
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-
+    <link rel="canonical" href="https://dmsm.github.io/scissors-congruence/">
     <link rel="stylesheet" href="css/style.css">
-
+    <script defer src="js/jquery.min.js"></script>
+    <script defer src="js/two.min.js"></script>
+    <script defer src="js/math.min.js"></script>
+    <script defer src="js/polyk.js"></script>
+    <script defer src="js/transformations.js"></script>
+    <script defer src="js/polygons.js"></script>
+    <script defer src="js/interface.js"></script>
 </head>
-
 <body>
-    <div id="fb-root"></div>
-    <script>(function(d, s, id) {
-      var js, fjs = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id)) return;
-      js = d.createElement(s); js.id = id;
-      js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.5&appId=1071865532855419";
-      fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));</script>
-    <div class="container-fluid">
-        <div class="row">
-            <div id="canvas" class="col-sm-8"></div>
-            <div class="col-sm-4 scroll">
-                <div id="sidebar">
-                    <div id="sidebar-content">
-                        <h1>Scissors Congruence<br><small>An interactive demonstration of the <a href="https://en.wikipedia.org/wiki/Wallace%E2%80%93Bolyai%E2%80%93Gerwien_theorem">Wallace–Bolyai–Gerwien theorem.</a></small></h1>
-                        <p>by <a href="https://people.csail.mit.edu/smirnov/">Dima Smirnov</a> and <a href="http://zepstein.com">Zivvy Epstein</a></p>
-                        <div class="panel panel-default">
-                            <div class="panel-heading"><h4>Theorem</h4></div>
-                            <div class="panel-body">
-                                <img class="img-responsive" src="img/wbg.jpg">
-                                <p>
-                                    Any simple polygon can be cut into finite pieces and rearranged to form any other simple polygon of equal area.
-                                </p>
-                            </div>
-                        </div>
+    <a class="skip-link" href="#controls">Skip to demonstration controls</a>
+    <div class="page">
+        <main class="layout">
+            <header class="page-header">
+                <h1>Scissors Congruence</h1>
+                <p class="subtitle">An interactive demonstration of the <a href="https://en.wikipedia.org/wiki/Wallace%E2%80%93Bolyai%E2%80%93Gerwien_theorem">Wallace–Bolyai–Gerwien theorem</a>.</p>
+                <p class="byline">by <a href="https://dsmirnov.com/">Dima Smirnov</a> and <a href="https://www.zive.info/">Zivvy Epstein</a></p>
+            </header>
 
-                        <p>Read our paper presented at the Symposium on Computational Geometry 2016 <a href="http://drops.dagstuhl.de/opus/volltexte/2016/5958/pdf/LIPIcs-SoCG-2016-66.pdf">here</a>.</p>
-
-                        <div class="social">
-                            <div class="fb-like" data-href="http://dmsm.github.io/scissors-congruence" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
-                            <a href="https://twitter.com/share" class="twitter-share-button">Tweet</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-                            <iframe class="git" src="https://ghbtns.com/github-btn.html?user=dmsm&repo=scissors-congruence&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="25px"></iframe>
-                        </div>
-                    </div>
-
-                    <div id="controls">
-                        <button id="play-pause" type="button" class="btn btn-default" disabled>
-                            <span class="glyphicon glyphicon-pause" aria-hidden="true"></span> Pause
-                        </button>
-                        <button id="replay" type="button" class="btn btn-default" disabled>
-                        <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Replay
-                        </button>
-                        <button id="demo" type="button" class="btn btn-default">
-                            <span class="glyphicon glyphicon-film" aria-hidden="true"></span> Demo
-                        </button>
+            <section class="experiment" aria-label="Interactive demonstration">
+                <div id="canvas" aria-label="Polygon drawing area" aria-describedby="instruction"></div>
+                <div class="experiment-footer">
+                    <p id="instruction" class="instruction" role="status" aria-live="polite" aria-atomic="true">Click or tap to begin drawing the first polygon.</p>
+                    <div id="controls" class="controls" role="group" aria-label="Demonstration controls" tabindex="-1">
+                        <button id="demo" class="button button-primary" type="button">Demo</button>
+                        <button id="play-pause" class="button" type="button" disabled>Pause</button>
+                        <button id="replay" class="button" type="button" disabled>Replay</button>
+                        <button id="start-over" class="button button-quiet" type="button">Start over</button>
                     </div>
                 </div>
-            </div>
-        </div>
+            </section>
+
+            <aside class="sidebar" aria-label="About this demonstration">
+                <section class="theorem">
+                    <h2>Theorem</h2>
+                    <img class="theorem-image" src="img/wbg.svg" width="725" height="377" alt="A square and a triangle made from the same four colored pieces, rearranged.">
+                    <p>Any simple polygon can be cut into a finite number of pieces and rearranged into any other simple polygon of equal area.</p>
+                </section>
+                <a class="paper-link" href="https://drops.dagstuhl.de/opus/volltexte/2016/5958/pdf/LIPIcs-SoCG-2016-66.pdf">Read the paper <span>SoCG 2016 <span aria-hidden="true">↗</span></span></a>
+                <section class="sharing" aria-labelledby="share-title">
+                    <h3 id="share-title">Share</h3>
+                    <div class="social">
+                        <button id="copy-link" class="button button-small" type="button">Copy link</button>
+                        <a class="button button-small" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdmsm.github.io%2Fscissors-congruence%2F" target="_blank" rel="noopener noreferrer" aria-label="Share on Facebook (opens a new tab)">Facebook <span aria-hidden="true">↗</span></a>
+                        <a class="button button-small" href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fdmsm.github.io%2Fscissors-congruence%2F&amp;text=Scissors%20Congruence%20%E2%80%94%20an%20interactive%20demonstration%20of%20the%20Wallace%E2%80%93Bolyai%E2%80%93Gerwien%20theorem." target="_blank" rel="noopener noreferrer" aria-label="Share on X (opens a new tab)">Share on X <span aria-hidden="true">↗</span></a>
+                        <a class="button button-small" href="https://github.com/dmsm/scissors-congruence" target="_blank" rel="noopener noreferrer" aria-label="View source on GitHub (opens a new tab)">GitHub <span aria-hidden="true">↗</span></a>
+                    </div>
+                    <p id="copy-status" class="copy-status" role="status" aria-live="polite"></p>
+                    <label id="copy-fallback" hidden>Copy this link<input id="share-url" type="text" readonly value="https://dmsm.github.io/scissors-congruence/"></label>
+                </section>
+            </aside>
+        </main>
     </div>
 </body>
-
 </html>
